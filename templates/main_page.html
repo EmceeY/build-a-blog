@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for art in arts %}
+  <div class="art">
+    <div class="art-title">{{Data.title}}</div>
+    <pre class="art-body">{{Data.art}}</pre>
+{% endfor %}
+{% endblock %}

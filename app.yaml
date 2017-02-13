@@ -10,7 +10,7 @@ handlers:
   upload: favicon\.ico
 
 - url: .*
-  script: asciichan.app
+  script: buildBlog.app
 
 libraries:
 - name: webapp2
