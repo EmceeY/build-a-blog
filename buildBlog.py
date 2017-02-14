@@ -19,56 +19,45 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    def render_front(self, title="", art="", error="", ):
+        arts = db.GqlQuery("SELECT * FROM Post "
+                           "ORDER BY created DESC")
+        self.render("base.html", title=title, art=art, error=error, arts=arts)
 
-class Data(db.Model):
+
+class Post(db.Model):
     title = db.StringProperty(required = True)
     art = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
 class New_Post(Handler):
 
-    def render_front(self, title="", art="", error="", ):
-        arts = db.GqlQuery("SELECT * FROM Data "
-                           "ORDER BY created DESC")
-        self.render("base.html", title=title, art=art, error=error, arts=arts)
-
     def get(self):
-        t = jinja_env.get_template("post.html")
-        content = t.render()
-        self.render_front(content)
+        t = jinja_env.get_template("post1.html")
+        self.render(t)
 
     def post(self):
         title = self.request.get("title")
         art = self.request.get("art")
 
         if title and art:
-            a = Data(title = title, art = art)
+            a = Post(title = title, art = art)
             a.put()
             self.redirect("/")
         else:
-            error = "we need both a title and some artwork!"
+            error = "we need both a title and some content!"
             self.render_front(title, art, error)
 
 class MainPage(Handler):
-    def render_front(self, title="", art="", error="", ):
-        arts = db.GqlQuery("SELECT * FROM Data "
-                           "ORDER BY created DESC")
-        self.render("base.html", title=title, art=art, error=error, arts=arts)
-
     def get(self):
         self.render_front()
 
-class Posts(Handler):
-    def render_front(self, title="", art="", error="", ):
-        arts = db.GqlQuery("SELECT * FROM Data "
-                           "ORDER BY created DESC")
-        self.render("main_page.html", title=title, art=art, error=error, arts=arts)
-
 class ViewPostHandler(webapp2.RequestHandler):
     def get(self, id):
-        t = jinja_env.get_template('main_page.html')
-        content = t.render(title, art)
-        self.response.write(content)
+        Post.get_by_id(int(id), parent=None)
+
+        #else:
+            #self.response.write("Sorry, there is no post with that ID")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
