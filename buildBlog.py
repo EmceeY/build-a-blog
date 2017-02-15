@@ -30,6 +30,10 @@ class Post(db.Model):
     art = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+    def render(self):
+        self._render_test = self.content.replace('\n', '<br>')
+        return render_str("main_page.html", p = self)
+
 class New_Post(Handler):
 
     def get(self):
@@ -52,9 +56,16 @@ class MainPage(Handler):
     def get(self):
         self.render_front()
 
-class ViewPostHandler(webapp2.RequestHandler):
+class ViewPostHandler(Handler):
     def get(self, id):
-        Post.get_by_id(int(id), parent=None)
+        t = jinja_env.get_template("main_page.html")
+        if id == None:
+            self.response.write("There are no blog entries with that ID!")
+        else:
+            Post.get_by_id(int(id), parent=None)
+            title = Post.title
+            art = Post.art
+            self.render(t, title=title, art=art)
 
         #else:
             #self.response.write("Sorry, there is no post with that ID")
