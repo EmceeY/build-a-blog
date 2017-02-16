@@ -9,17 +9,17 @@
 
   <body>
     <h1>
-      <a href='/'>Blogge</a>
+      <a href='/blog'>Blogge</a>
     </h1>
     <h2>(it's pronounced Bloh-Zhe)</h2>
     <ul>
-      <li><a href='/'>Main Page</a></li>
-      <li><a href='/newpost'>Make a post</a></li>
+      <li><a href='/blog'>Main Page</a></li>
+      <li><a href='/blog/newpost'>Make a post</a></li>
     </ul>
-
+    <div id="content">
     {% block content %}
     {% endblock %}
-
+  </div>
   </body>
 
 </html>
